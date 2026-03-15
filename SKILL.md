@@ -96,26 +96,26 @@ The Zulk MCP server provides the following tools. Note that tool names use an un
 
 ### Organization Management
 
-- `zulk_get_organizations`: Returns all organizations that the authenticated user has access to.
-- `zulk_create_organization`: Creates a new organization with the authenticated user as owner. Parameters: `name` (string).
+- `zulk_get_organizations()`: Returns all organizations that the authenticated user has access to.
+- `zulk_create_organization(name: string)`: Creates a new organization with the authenticated user as owner.
 
 ### Organization Members
 
-- `zulk_get_organization_members`: Returns all members of a specific organization. Parameters: `orgId` (string).
-- `zulk_add_organization_member`: Adds a new member to an organization (requires ADMIN or OWNER role). Parameters: `orgId` (string), `email` (string), `role` (optional: "MANAGER" | "ADMIN" | "OWNER").
-- `zulk_update_member_role`: Updates the role of a specific member in an organization. Parameters: `orgId` (string), `memberId` (string), `role` ("MANAGER" | "ADMIN" | "OWNER").
-- `zulk_remove_organization_member`: Removes a member from an organization (requires ADMIN or OWNER role). Parameters: `orgId` (string), `memberId` (string).
+- `zulk_get_organization_members(orgId: string)`: Returns all members of a specific organization.
+- `zulk_add_organization_member(orgId: string, email: string, role?: "MANAGER" | "ADMIN" | "OWNER")`: Adds a new member to an organization (requires ADMIN or OWNER role).
+- `zulk_update_member_role(orgId: string, memberId: string, role: "MANAGER" | "ADMIN" | "OWNER")`: Updates the role of a specific member in an organization.
+- `zulk_remove_organization_member(orgId: string, memberId: string)`: Removes a member from an organization (requires ADMIN or OWNER role).
 
 ### Link Management
 
-- `zulk_get_organization_links`: Returns all short links for a specific organization. Parameters: `orgId` (string).
-- `zulk_create_link`: Creates a new short link for the given URL in the specified organization. Parameters: `orgId` (string), `url` (string, valid URI), `key` (optional string), `length` (optional number 5-10), `expiresAt` (optional ISO 8601 string, Pro plans only), `password` (optional string, Pro plans only), `utmParams` (optional).
-- `zulk_get_link`: Returns details of a specific link by ID from the specified organization. Parameters: `orgId` (string), `linkId` (string).
-- `zulk_update_link`: Updates an existing short link for the specified organization. Parameters: `orgId` (string), `linkId` (string), `url` (string, valid URI), `key` (string), `expiresAt` (optional ISO 8601 string, Pro plan feature), `password` (optional string, Pro plan feature).
+- `zulk_get_organization_links(orgId: string)`: Returns all short links for a specific organization.
+- `zulk_create_link(orgId: string, url: string, key?: string, length?: number, expiresAt?: string, password?: string, utmParams?: any)`: Creates a new short link for the given URL in the specified organization. *(Note: length is 5-10, expiresAt and password are Pro plan features).*
+- `zulk_get_link(orgId: string, linkId: string)`: Returns details of a specific link by ID from the specified organization.
+- `zulk_update_link(orgId: string, linkId: string, url: string, key: string, expiresAt?: string, password?: string)`: Updates an existing short link for the specified organization. *(Note: expiresAt and password are Pro plan features).*
 
 ### Analytics
 
-- `zulk_get_organization_analytics`: Returns click analytics data for an organization's links from PostHog. Parameters: `orgId` (string), `dateFrom` (optional string, default: -7d), `dateTo` (optional string, default: today), `interval` (optional string, default: day).
+- `zulk_get_organization_analytics(orgId: string, dateFrom?: string, dateTo?: string, interval?: string)`: Returns click analytics data for an organization's links from PostHog. *(Defaults: dateFrom "-7d", dateTo "today", interval "day")*.
 
 ## Common Workflows
 
