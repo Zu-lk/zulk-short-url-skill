@@ -32,7 +32,9 @@ To use this skill, add the Zulk MCP server configuration to your AI assistant's 
 Choose the transport method that best fits your environment:
 
 #### 1. Streamable HTTP (Recommended)
+
 Fastest and most reliable communication.
+
 ```json
 {
   "mcpServers": {
@@ -42,7 +44,9 @@ Fastest and most reliable communication.
 ```
 
 #### 2. SSE (Server-Sent Events)
+
 Real-time streaming specialized for certain clients.
+
 ```json
 {
   "mcpServers": {
@@ -51,14 +55,16 @@ Real-time streaming specialized for certain clients.
 }
 ```
 
-#### 3. Stdio (via mcp-remote)
+#### 3. Stdio (via mcp-remote or mcporter)
+
 Uses standard input/output via a remote bridge.
+
 ```json
 {
   "mcpServers": {
     "zulk-url-shortener": {
       "command": "npx",
-      "args": ["mcp-remote", "https://mcp.zu.lk/mcp"]
+      "args": ["mcporter", "https://mcp.zu.lk/mcp"]
     }
   }
 }
@@ -75,6 +81,7 @@ Uses standard input/output via a remote bridge.
 ## When To Use This Skill
 
 Use this skill when the user asks to:
+
 - shorten a URL
 - manage short links
 - view or update an existing short link
@@ -85,48 +92,56 @@ Use this skill when the user asks to:
 
 ## Available MCP Tools
 
-The Zulk MCP server provides the following tools:
+The Zulk MCP server provides the following tools. Note that tool names use an underscore (`_`) instead of a dot:
 
 ### Organization Management
-- `zulk.get_organizations`: Returns all organizations the authenticated user has access to.
-- `zulk.create_organization`: Creates a new organization with the authenticated user as the owner.
+
+- `zulk_get_organizations`: Returns all organizations that the authenticated user has access to.
+- `zulk_create_organization`: Creates a new organization with the authenticated user as owner. Parameters: `name` (string).
 
 ### Organization Members
-- `zulk.get_organization_members`: Returns all members of a specific organization.
-- `zulk.add_organization_member`: Adds a new member to an organization. This requires **ADMIN** or **OWNER** role.
-- `zulk.update_member_role`: Updates the role of a specific organization member.
-- `zulk.remove_organization_member`: Removes a member from an organization. This requires **ADMIN** or **OWNER** role.
+
+- `zulk_get_organization_members`: Returns all members of a specific organization. Parameters: `orgId` (string).
+- `zulk_add_organization_member`: Adds a new member to an organization (requires ADMIN or OWNER role). Parameters: `orgId` (string), `email` (string), `role` (optional: "MANAGER" | "ADMIN" | "OWNER").
+- `zulk_update_member_role`: Updates the role of a specific member in an organization. Parameters: `orgId` (string), `memberId` (string), `role` ("MANAGER" | "ADMIN" | "OWNER").
+- `zulk_remove_organization_member`: Removes a member from an organization (requires ADMIN or OWNER role). Parameters: `orgId` (string), `memberId` (string).
 
 ### Link Management
-- `zulk.get_organization_links`: Returns all short links belonging to an organization.
-- `zulk.create_link`: Creates a new short link for a URL within a specified organization.
-- `zulk.get_link`: Returns details of a specific link by ID.
-- `zulk.update_link`: Updates an existing short link.
+
+- `zulk_get_organization_links`: Returns all short links for a specific organization. Parameters: `orgId` (string).
+- `zulk_create_link`: Creates a new short link for the given URL in the specified organization. Parameters: `orgId` (string), `url` (string, valid URI), `key` (optional string), `length` (optional number 5-10), `expiresAt` (optional ISO 8601 string, Pro plans only), `password` (optional string, Pro plans only), `utmParams` (optional).
+- `zulk_get_link`: Returns details of a specific link by ID from the specified organization. Parameters: `orgId` (string), `linkId` (string).
+- `zulk_update_link`: Updates an existing short link for the specified organization. Parameters: `orgId` (string), `linkId` (string), `url` (string, valid URI), `key` (string), `expiresAt` (optional ISO 8601 string, Pro plan feature), `password` (optional string, Pro plan feature).
 
 ### Analytics
-- `zulk.get_organization_analytics`: Returns click analytics data for links in an organization.
+
+- `zulk_get_organization_analytics`: Returns click analytics data for an organization's links from PostHog. Parameters: `orgId` (string), `dateFrom` (optional string, default: -7d), `dateTo` (optional string, default: today), `interval` (optional string, default: day).
 
 ## Common Workflows
 
 ### Creating a Short Link
+
 1. Determine which organization the link should belong to.
-2. If the organization is not specified, call `zulk.get_organizations` to list available organizations.
-3. Call `zulk.create_link` with the specific `organization_id` and `url`.
+2. If the organization is not specified, call `zulk_get_organizations` to list available organizations.
+3. Call `zulk_create_link` with the specific `orgId` and `url`.
 4. Return the generated short link to the user.
 
 ### Listing Links in an Organization
+
 1. Identify the organization.
-2. Call `zulk.get_organization_links`.
+2. Call `zulk_get_organization_links`.
 3. Return the list of links in a readable format.
 
 ### Inviting a Member
+
 1. Ensure the user has **ADMIN** or **OWNER** permissions.
-2. Call `zulk.add_organization_member` with the organization ID and member details.
+2. Call `zulk_add_organization_member` with the organization ID and member details.
 3. Confirm the member was successfully added.
 
 ### Viewing Analytics
+
 1. Identify the organization.
-2. Call `zulk.get_organization_analytics`.
+2. Call `zulk_get_organization_analytics`.
 3. Summarize click metrics for the user.
 
 ## Best Practices
@@ -139,20 +154,24 @@ The Zulk MCP server provides the following tools:
 ## Usage Examples
 
 ### Creating a Link
+
 **Input**: "Shorten https://github.com/Zu-lk/zulk-short-url-skill for my marketing team"
 **Agent reasoning**:
+
 1. Identify the organization belonging to the marketing team.
-2. Call `zulk.create_link`.
+2. Call `zulk_create_link`.
 3. Return the generated short link.
-**Output**: "Generated short link: https://zu.lk/z-skill"
+   **Output**: "Generated short link: https://zu.lk/z-skill"
 
 ### Checking Analytics
+
 **Input**: "Show analytics for our links"
 **Agent reasoning**:
+
 1. Determine the organization.
-2. Call `zulk.get_organization_analytics`.
+2. Call `zulk_get_organization_analytics`.
 3. Summarize the click data.
-**Output**: "Your links received 1,240 clicks yesterday. Here is the breakdown..."
+   **Output**: "Your links received 1,240 clicks yesterday. Here is the breakdown..."
 
 ## Edge Cases & Troubleshooting
 
@@ -162,5 +181,6 @@ The Zulk MCP server provides the following tools:
 - **Link Expiration**: Ensure you check if the link has an expiration date if it suddenly stops working.
 
 ## References
+
 - [Official Website](https://zu.lk)
 - [MCP Documentation](https://zu.lk/-/mcp)
