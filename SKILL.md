@@ -109,13 +109,13 @@ The Zulk MCP server provides the following tools. Note that tool names use an un
 ### Link Management
 
 - `zulk_get_organization_links(orgId: string)`: Returns all short links for a specific organization.
-- `zulk_create_link(orgId: string, url: string, key?: string, length?: number, expiresAt?: string, password?: string, utmParams?: any)`: Creates a new short link for the given URL in the specified organization. *(Note: length is 5-10, expiresAt and password are Pro plan features).*
+- `zulk_create_link(orgId: string, url: string, key?: string, length?: number, expiresAt?: string, password?: string, utmParams?: any)`: Creates a new short link for the given URL in the specified organization. _(Note: length is 5-10, expiresAt and password are Pro plan features)._
 - `zulk_get_link(orgId: string, linkId: string)`: Returns details of a specific link by ID from the specified organization.
-- `zulk_update_link(orgId: string, linkId: string, url: string, key: string, expiresAt?: string, password?: string)`: Updates an existing short link for the specified organization. *(Note: expiresAt and password are Pro plan features).*
+- `zulk_update_link(orgId: string, linkId: string, url: string, key: string, expiresAt?: string, password?: string)`: Updates an existing short link for the specified organization. _(Note: expiresAt and password are Pro plan features)._
 
 ### Analytics
 
-- `zulk_get_organization_analytics(orgId: string, dateFrom?: string, dateTo?: string, interval?: string)`: Returns click analytics data for an organization's links from PostHog. *(Defaults: dateFrom "-7d", dateTo "today", interval "day")*.
+- `zulk_get_organization_analytics(orgId: string, dateFrom?: string, dateTo?: string, interval?: string)`: Returns click analytics data for an organization's links. _(Defaults: dateFrom "-7d", dateTo "today", interval "day")_.
 
 ## Common Workflows
 
